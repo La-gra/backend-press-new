@@ -11,3 +11,148 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+}
+
+enum ArticleStatus {
+  DRAFT
+  REVIEW
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+model Admin {
+  id String @id @default(uuid())
+
+  fullname String
+
+  email String @unique
+
+  password String
+
+  avatar String?
+
+  isActive Boolean @default(true)
+
+  role AdminRole @default(ADMIN)
+
+  permissions Permission[]
+
+  articles Article[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}
+
+model Permission {
+  id String @id @default(uuid())
+
+  name String @unique
+
+  admins Admin[]
+
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id String @id @default(uuid())
+
+  name String @unique
+  slug String @unique
+
+  description String?
+
+  articles Article[]
+
+  createdAt DateTime @default(now())
+}
+
+model Tag {
+  id String @id @default(uuid())
+
+  name String @unique
+  slug String @unique
+
+  articles ArticleTag[]
+
+  createdAt DateTime @default(now())
+}
+
+model Article {
+  id String @id @default(uuid())
+
+  title String
+
+  slug String @unique
+
+  excerpt String?
+
+  content String
+
+  featuredImage String?
+
+  seoTitle       String?
+  seoDescription String?
+  videoUrl       String?
+
+  status ArticleStatus @default(DRAFT)
+
+  views Int @default(0)
+
+  scheduledFor DateTime?
+
+  publishedAt DateTime?
+
+  authorId String
+
+  author Admin @relation(fields: [authorId], references: [id])
+
+  categoryId String
+
+  category Category @relation(fields: [categoryId], references: [id])
+
+  tags ArticleTag[]
+
+  media Media[]
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([slug])
+  @@index([publishedAt])
+  @@index([views])
+}
+
+model ArticleTag {
+  articleId String
+  tagId     String
+
+  article Article @relation(fields: [articleId], references: [id])
+  tag     Tag     @relation(fields: [tagId], references: [id])
+
+  @@id([articleId, tagId])
+}
+
+model Media {
+  id String @id @default(uuid())
+
+  url  String
+  type MediaType
+
+  articleId String
+  article   Article @relation(fields: [articleId], references: [id])
+
+  createdAt DateTime @default(now())
+}

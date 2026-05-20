@@ -1,0 +1,18 @@
+import jwt from 'jsonwebtoken'
+
+export const generateAccessToken = (payload: object) => {
+  return jwt.sign(
+    payload,
+    process.env.JWT_ACCESS_SECRET as string,
+    {
+      expiresIn: '15m'
+    }
+  )
+}
+
+export const verifyAccessToken = (token: string) => {
+  return jwt.verify(
+    token,
+    process.env.JWT_ACCESS_SECRET as string
+  )
+}

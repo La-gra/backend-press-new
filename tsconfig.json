@@ -2,11 +2,31 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
+
     "rootDir": "./src",
     "outDir": "./dist",
+
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": ["node"]
-  }
+    "moduleResolution": "node",
+
+    "types": ["node"],
+
+    "baseUrl": "./src",
+
+    "paths": {
+      "@/*": ["*"]
+    },
+
+    "ignoreDeprecations": "6.0"
+  },
+
+  "include": ["src/**/*"],
+
+  "exclude": [
+    "node_modules",
+    "dist",
+    "prisma.config.ts"
+  ]
 }
