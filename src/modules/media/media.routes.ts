@@ -1,10 +1,9 @@
 import { Router } from 'express'
 
-import upload from '@/config/multer'
-
 import {
   listMedia,
   getMedia,
+  getUploadSignature,
   uploadImage,
   deleteMedia
 } from './media.controller'
@@ -30,6 +29,18 @@ router.get(
 )
 
 router.get(
+  '/signature',
+
+  authenticate,
+
+  requirePermission(
+    PERMISSIONS.MEDIA_UPLOAD
+  ),
+
+  getUploadSignature
+)
+
+router.get(
   '/:id',
 
   authenticate,
@@ -49,8 +60,6 @@ router.post(
   requirePermission(
     PERMISSIONS.MEDIA_UPLOAD
   ),
-
-  upload.single('image'),
 
   uploadImage
 )

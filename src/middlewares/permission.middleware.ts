@@ -4,6 +4,7 @@ import {
 } from 'express'
 
 import { AuthRequest } from './auth.middleware'
+import { apiResponse } from '@/utils/apiResponse'
 
 export const requirePermission = (
   permission: string
@@ -15,9 +16,7 @@ export const requirePermission = (
   ) => {
     // Vérifier admin connecté
     if (!req.admin) {
-      return res.status(401).json({
-        message: 'Unauthorized'
-      })
+      return apiResponse.error(res, 'Unauthorized', 401)
     }
 
     // SUPER_ADMIN bypass
@@ -36,9 +35,7 @@ export const requirePermission = (
       permissions.includes(permission)
 
     if (!hasPermission) {
-      return res.status(403).json({
-        message: 'Forbidden'
-      })
+      return apiResponse.error(res, 'Forbidden', 403)
     }
 
     next()

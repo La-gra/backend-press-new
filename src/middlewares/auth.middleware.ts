@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
 import prisma from '@/config/prisma'
+import { apiResponse } from '@/utils/apiResponse'
 
 export interface AuthRequest extends Request {
   admin?: {
@@ -21,9 +22,7 @@ export const authenticate = async (
     const token = req.cookies.access_token
 
     if (!token) {
-      return res.status(401).json({
-        message: 'Unauthorized'
-      })
+      return apiResponse.error(res, 'Unauthorized', 401)
     }
 
     const decoded = jwt.verify(
@@ -42,17 +41,13 @@ export const authenticate = async (
     })
 
     if (!admin || !admin.isActive) {
-      return res.status(401).json({
-        message: 'Unauthorized'
-      })
+      return apiResponse.error(res, 'Unauthorized', 401)
     }
 
     req.admin = admin
 
     next()
   } catch {
-    return res.status(401).json({
-      message: 'Unauthorized'
-    })
+    return apiResponse.error(res, 'Unauthorized', 401)
   }
 }

@@ -43,6 +43,12 @@ model Admin {
 
   isActive Boolean @default(true)
 
+  isVerified Boolean @default(false)
+
+  verificationToken String? @unique
+
+  verificationTokenExpires DateTime?
+
   role AdminRole @default(ADMIN)
 
   permissions Permission[]
@@ -145,14 +151,20 @@ model ArticleTag {
   @@id([articleId, tagId])
 }
 
+model Subscriber {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
 model Media {
   id String @id @default(uuid())
 
-  url  String
-  type MediaType
+  url   String
+  type  MediaType
 
-  articleId String
-  article   Article @relation(fields: [articleId], references: [id])
+  articleId String?
+  article   Article? @relation(fields: [articleId], references: [id])
 
   createdAt DateTime @default(now())
 }

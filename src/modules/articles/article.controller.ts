@@ -1,6 +1,7 @@
 import { Response } from 'express'
 
 import * as articleService from './article.service'
+import { apiResponse } from '@/utils/apiResponse'
 
 import { AuthRequest } from '@/middlewares/auth.middleware'
 
@@ -11,20 +12,62 @@ export const listArticles = async (
   try {
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || 20
-    const status = String(req.query.status || '')
+    const status = (
+      Array.isArray(req.query.status)
+        ? req.query.status[0]
+        : typeof req.query.status === 'string'
+        ? req.query.status
+        : ''
+    ) as string
+
+    const categoryId = (
+      Array.isArray(req.query.categoryId)
+        ? req.query.categoryId[0]
+        : typeof req.query.categoryId === 'string'
+        ? req.query.categoryId
+        : ''
+    ) as string
+
+    const authorId = (
+      Array.isArray(req.query.authorId)
+        ? req.query.authorId[0]
+        : typeof req.query.authorId === 'string'
+        ? req.query.authorId
+        : ''
+    ) as string
+
+    const dateFrom = (
+      Array.isArray(req.query.dateFrom)
+        ? req.query.dateFrom[0]
+        : typeof req.query.dateFrom === 'string'
+        ? req.query.dateFrom
+        : ''
+    ) as string
+
+    const dateTo = (
+      Array.isArray(req.query.dateTo)
+        ? req.query.dateTo[0]
+        : typeof req.query.dateTo === 'string'
+        ? req.query.dateTo
+        : ''
+    ) as string
 
     const articles =
       await articleService.listArticles(
         page,
         limit,
-        status
+        status,
+        {
+          categoryId,
+          authorId,
+          dateFrom,
+          dateTo
+        }
       )
 
-    return res.json(articles)
+    return apiResponse.success(res, articles)
   } catch (error: any) {
-    return res.status(400).json({
-      message: error.message
-    })
+    return apiResponse.error(res, error.message, 400)
   }
 }
 
@@ -33,20 +76,15 @@ export const getArticle = async (
   res: Response
 ) => {
   try {
-    const articleId = Array.isArray(req.params.id)
-      ? req.params.id[0]
-      : req.params.id
+    const articleId = (
+      Array.isArray(req.params.id) ? req.params.id[0] : req.params.id
+    ) as string
 
-    const article =
-      await articleService.getArticle(
-        articleId
-      )
+    const article = await articleService.getArticle(articleId)
 
-    return res.json(article)
+    return apiResponse.success(res, { article })
   } catch (error: any) {
-    return res.status(404).json({
-      message: error.message
-    })
+    return apiResponse.error(res, error.message, 404)
   }
 }
 
@@ -61,11 +99,14 @@ export const createArticle = async (
         req.body
       )
 
-    return res.status(201).json(article)
+    return apiResponse.success(
+      res,
+      { article },
+      'Article created',
+      201
+    )
   } catch (error: any) {
-    return res.status(400).json({
-      message: error.message
-    })
+    return apiResponse.error(res, error.message, 400)
   }
 }
 
@@ -74,21 +115,18 @@ export const updateArticle = async (
   res: Response
 ) => {
   try {
-    const articleId = Array.isArray(req.params.id)
-      ? req.params.id[0]
-      : req.params.id
+    const articleId = (
+      Array.isArray(req.params.id) ? req.params.id[0] : req.params.id
+    ) as string
 
-    const article =
-      await articleService.updateArticle(
-        articleId,
-        req.body
-      )
+    const article = await articleService.updateArticle(
+      articleId,
+      req.body
+    )
 
-    return res.json(article)
+    return apiResponse.success(res, { article })
   } catch (error: any) {
-    return res.status(400).json({
-      message: error.message
-    })
+    return apiResponse.error(res, error.message, 400)
   }
 }
 
@@ -97,21 +135,15 @@ export const deleteArticle = async (
   res: Response
 ) => {
   try {
-    const articleId = Array.isArray(req.params.id)
-      ? req.params.id[0]
-      : req.params.id
+    const articleId = (
+      Array.isArray(req.params.id) ? req.params.id[0] : req.params.id
+    ) as string
 
-    await articleService.deleteArticle(
-      articleId
-    )
+    await articleService.deleteArticle(articleId)
 
-    return res.json({
-      message: 'Article deleted'
-    })
+    return apiResponse.success(res, null, 'Article deleted')
   } catch (error: any) {
-    return res.status(400).json({
-      message: error.message
-    })
+    return apiResponse.error(res, error.message, 400)
   }
 }
 
@@ -120,19 +152,14 @@ export const publishArticle = async (
   res: Response
 ) => {
   try {
-    const articleId = Array.isArray(req.params.id)
-      ? req.params.id[0]
-      : req.params.id
+    const articleId = (
+      Array.isArray(req.params.id) ? req.params.id[0] : req.params.id
+    ) as string
 
-    const article =
-      await articleService.publishArticle(
-        articleId
-      )
+    const article = await articleService.publishArticle(articleId)
 
-    return res.json(article)
+    return apiResponse.success(res, { article })
   } catch (error: any) {
-    return res.status(400).json({
-      message: error.message
-    })
+    return apiResponse.error(res, error.message, 400)
   }
 }

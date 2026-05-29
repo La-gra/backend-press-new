@@ -219,6 +219,9 @@ importers:
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
+      cloudinary:
+        specifier: ^2.10.0
+        version: 2.10.0
       compression:
         specifier: ^1.8.1
         version: 1.8.1
@@ -237,6 +240,9 @@ importers:
       express-rate-limit:
         specifier: ^8.5.2
         version: 8.5.2(express@5.2.1)
+      feed:
+        specifier: ^5.2.1
+        version: 5.2.1
       helmet:
         specifier: ^8.1.0
         version: 8.1.0
@@ -252,6 +258,9 @@ importers:
       multer:
         specifier: ^2.1.1
         version: 2.1.1
+      resend:
+        specifier: ^6.12.4
+        version: 6.12.4
       slugify:
         specifier: ^1.6.9
         version: 1.6.9
@@ -641,6 +650,9 @@ packages:
       '@types/react':
         optional: true
 
+  '@stablelib/base64@1.0.1':
+    resolution: {integrity: sha512-1bnPQqSxSuc3Ii6MhBysoWCg58j97aUjuCSZrGSmDxNqtytIi0k8utUenAwTZN4V5mXXYGsVUI9zeBqy+jBOSQ==}
+
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
@@ -822,6 +834,10 @@ packages:
     resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
     engines: {node: '>= 20.19.0'}
 
+  cloudinary@2.10.0:
+    resolution: {integrity: sha512-sY09kYg7wprkndAOjZBAYqFZqwL+SxnEGcAvksOvFA+5upnFn949UjkEkHKNSwkBtW/xRDd0p6NgbSXZcxkI3w==}
+    engines: {node: '>=9'}
+
   compressible@2.0.18:
     resolution: {integrity: sha512-AF3r7P5dWxL8MxyITRMlORQNaOA2IkAFaTr4k7BUumjPtRpGDTZpl0Pb1XCO6JeDCBdp126Cgs9sMxqSjgYyRg==}
     engines: {node: '>= 0.6'}
@@ -996,8 +1012,15 @@ packages:
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
+  fast-sha256@1.3.0:
+    resolution: {integrity: sha512-n11RGP/lrWEFI/bWdygLxhI+pVeo1ZYIVwvvPkW7azl/rOy+F3HYRZ2K5zeE9mmkhQppyv9sQFx0JM9UabnpPQ==}
+
   fast-uri@3.1.2:
     resolution: {integrity: sha512-rVjf7ArG3LTk+FS6Yw81V1DLuZl1bRbNrev6Tmd/9RaroeeRRJhAt7jg/6YFxbvAQXUCavSoZhPPj6oOx+5KjQ==}
+
+  feed@5.2.1:
+    resolution: {integrity: sha512-jTynzYPWs9ALjro0GW8j7sv9y7cJBeOdD4Y88kVqYy/eyusIX3g+499JiTDIlD9Ge/unebx57T4Uzo6vpYvMtA==}
+    engines: {node: '>=20', pnpm: '>=10'}
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -1376,6 +1399,9 @@ packages:
   pkg-types@2.3.1:
     resolution: {integrity: sha512-y+ichcgc2LrADuhLNAx8DFjVfgz91pRxfZdI3UDhxHvcVEZsenLO+7XaU5vOp0u/7V/wZ+plyuQxtrDlZJ+yeg==}
 
+  postal-mime@2.7.4:
+    resolution: {integrity: sha512-0WdnFQYUrPGGTFu1uOqD2s7omwua8xaeYGdO6rb88oD5yJ/4pPHDA4sdWqfD8wQVfCny563n/HQS7zTFft+f/g==}
+
   postgres-array@2.0.0:
     resolution: {integrity: sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==}
     engines: {node: '>=4'}
@@ -1466,6 +1492,15 @@ packages:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
 
+  resend@6.12.4:
+    resolution: {integrity: sha512-lRpJ2Hxd+ht+JPDm97juRcUp9HOMuZyxaRFRFmc9Tx8iNWiei94Dx9v6SWufgKk2667C/uCeKKspMotOHSpCSg==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@react-email/render': '*'
+    peerDependenciesMeta:
+      '@react-email/render':
+        optional: true
+
   resolve@1.22.12:
     resolution: {integrity: sha512-TyeJ1zif53BPfHootBGwPRYT1RUt6oGWsaQr8UyZW/eAm9bKoijtvruSDEmZHm92CwS9nj7/fWttqPCgzep8CA==}
     engines: {node: '>= 0.4'}
@@ -1492,6 +1527,10 @@ packages:
 
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
+
+  sax@1.6.0:
+    resolution: {integrity: sha512-6R3J5M4AcbtLUdZmRv2SygeVaM7IhrLXu9BmnOGmmACak8fiUtOsYNWUS4uK7upbmHIBbLBeFeI//477BKLBzA==}
+    engines: {node: '>=11.0.0'}
 
   scheduler@0.27.0:
     resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
@@ -1564,6 +1603,9 @@ packages:
   sqlstring@2.3.3:
     resolution: {integrity: sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==}
     engines: {node: '>= 0.6'}
+
+  standardwebhooks@1.0.0:
+    resolution: {integrity: sha512-BbHGOQK9olHPMvQNHWul6MYlrRTAOKn03rOe4A8O3CLWhNf4YHBqq2HJKKC+sfqpxiBY52pNeesD6jIiLDz8jg==}
 
   statuses@2.0.2:
     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
@@ -1688,6 +1730,10 @@ packages:
 
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
+
+  xml-js@1.6.11:
+    resolution: {integrity: sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==}
+    hasBin: true
 
   xss-clean@0.1.4:
     resolution: {integrity: sha512-4hArTFHYxrifK9VXOu/zFvwjTXVjKByPi6woUHb1IqxlX0Z4xtFBRjOhTKuYV/uE1VswbYsIh5vUEYp7MmoISQ==}
@@ -1980,6 +2026,8 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.14
 
+  '@stablelib/base64@1.0.1': {}
+
   '@standard-schema/spec@1.1.0': {}
 
   '@tsconfig/node10@1.0.12': {}
@@ -2194,6 +2242,10 @@ snapshots:
     dependencies:
       readdirp: 5.0.0
 
+  cloudinary@2.10.0:
+    dependencies:
+      lodash: 4.18.1
+
   compressible@2.0.18:
     dependencies:
       mime-db: 1.54.0
@@ -2389,7 +2441,13 @@ snapshots:
 
   fast-deep-equal@3.1.3: {}
 
+  fast-sha256@1.3.0: {}
+
   fast-uri@3.1.2: {}
+
+  feed@5.2.1:
+    dependencies:
+      xml-js: 1.6.11
 
   fill-range@7.1.1:
     dependencies:
@@ -2735,6 +2793,8 @@ snapshots:
       exsolve: 1.0.8
       pathe: 2.0.3
 
+  postal-mime@2.7.4: {}
+
   postgres-array@2.0.0: {}
 
   postgres-array@3.0.4: {}
@@ -2820,6 +2880,11 @@ snapshots:
 
   require-from-string@2.0.2: {}
 
+  resend@6.12.4:
+    dependencies:
+      postal-mime: 2.7.4
+      standardwebhooks: 1.0.0
+
   resolve@1.22.12:
     dependencies:
       es-errors: 1.3.0
@@ -2848,6 +2913,8 @@ snapshots:
   safe-buffer@5.2.1: {}
 
   safer-buffer@2.1.2: {}
+
+  sax@1.6.0: {}
 
   scheduler@0.27.0: {}
 
@@ -2932,6 +2999,11 @@ snapshots:
   split2@4.2.0: {}
 
   sqlstring@2.3.3: {}
+
+  standardwebhooks@1.0.0:
+    dependencies:
+      '@stablelib/base64': 1.0.1
+      fast-sha256: 1.3.0
 
   statuses@2.0.2: {}
 
@@ -3046,6 +3118,10 @@ snapshots:
       isexe: 2.0.0
 
   wrappy@1.0.2: {}
+
+  xml-js@1.6.11:
+    dependencies:
+      sax: 1.6.0
 
   xss-clean@0.1.4:
     dependencies:

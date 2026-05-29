@@ -2,16 +2,35 @@ import prisma from '@/config/prisma'
 
 import slugify from 'slugify'
 
-export const listTags = async () => {
-  return prisma.tag.findMany({
-    include: {
-      articles: true
-    },
+export const listTags = async (
+  page: number,
+  limit: number
+) => {
+  const skip = (page - 1) * limit
 
-    orderBy: {
-      createdAt: 'desc'
+  const [tags, total] = await Promise.all([
+    prisma.tag.findMany({
+      include: {
+        articles: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+      skip,
+      take: limit
+    }),
+    prisma.tag.count()
+  ])
+
+  return {
+    data: tags,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
     }
-  })
+  }
 }
 
 export const createTag = async (data: any) => {

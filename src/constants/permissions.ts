@@ -1,5 +1,6 @@
 export const PERMISSIONS = {
   ADMIN_CREATE: 'admin:create',
+  ADMIN_READ: 'admin:read',
   ADMIN_UPDATE: 'admin:update',
   ADMIN_DELETE: 'admin:delete',
 
@@ -10,6 +11,7 @@ export const PERMISSIONS = {
   ARTICLE_PUBLISH: 'article:publish',
 
   CATEGORY_CREATE: 'category:create',
+  CATEGORY_READ: 'category:read',
   CATEGORY_UPDATE: 'category:update',
   CATEGORY_DELETE: 'category:delete',
 

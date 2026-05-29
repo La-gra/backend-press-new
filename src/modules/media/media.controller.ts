@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 
 import * as mediaService from './media.service'
+import { apiResponse } from '@/utils/apiResponse'
+import cloudinary from '@/config/cloudinary'
 
 export const listMedia = async (
   req: Request,
@@ -8,7 +10,7 @@ export const listMedia = async (
 ) => {
   const media = await mediaService.listMedia()
 
-  return res.json(media)
+  return apiResponse.success(res, { media })
 }
 
 export const getMedia = async (
@@ -16,33 +18,55 @@ export const getMedia = async (
   res: Response
 ) => {
   try {
-    const mediaId = Array.isArray(req.params.id)
-      ? req.params.id[0]
-      : req.params.id
+    const mediaId = (
+      Array.isArray(req.params.id) ? req.params.id[0] : req.params.id
+    ) as string
 
     const media = await mediaService.getMedia(mediaId)
 
-    return res.json(media)
+    return apiResponse.success(res, { media })
   } catch (error: any) {
-    return res.status(404).json({
-      message: error.message
-    })
+    return apiResponse.error(res, error.message, 404)
   }
+}
+
+export const getUploadSignature = (
+  _req: Request,
+  res: Response
+) => {
+  const timestamp = Math.round(Date.now() / 1000)
+  const folder = 'press-new'
+
+  const signature = cloudinary.utils.api_sign_request(
+    { timestamp, folder },
+    process.env.CLOUDINARY_API_SECRET!
+  )
+
+  return apiResponse.success(res, {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    timestamp,
+    signature,
+    folder,
+  })
 }
 
 export const uploadImage = async (
   req: Request,
   res: Response
 ) => {
-  if (!req.file) {
-    return res.status(400).json({
-      message: 'No file uploaded'
-    })
+  const { url } = req.body
+
+  if (!url) {
+    return apiResponse.error(res, 'URL manquante', 400)
   }
 
-  return res.json({
-    url: `/uploads/articles/${req.file.filename}`
+  const media = await mediaService.createMedia({
+    url,
+    type: 'IMAGE',
   })
+
+  return apiResponse.success(res, { media })
 }
 
 export const deleteMedia = async (
@@ -50,18 +74,14 @@ export const deleteMedia = async (
   res: Response
 ) => {
   try {
-    const mediaId = Array.isArray(req.params.id)
-      ? req.params.id[0]
-      : req.params.id
+    const mediaId = (
+      Array.isArray(req.params.id) ? req.params.id[0] : req.params.id
+    ) as string
 
     await mediaService.deleteMedia(mediaId)
 
-    return res.json({
-      message: 'Media deleted'
-    })
+    return apiResponse.success(res, null, 'Media deleted')
   } catch (error: any) {
-    return res.status(400).json({
-      message: error.message
-    })
+    return apiResponse.error(res, error.message, 400)
   }
 }

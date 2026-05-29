@@ -18,7 +18,7 @@ export const createArticleSchema = z.object({
 
   excerpt: z.string().optional(),
 
-  content: z.string().min(50),
+  content: z.string().min(10),
 
   featuredImage: z.string().optional(),
 
@@ -40,7 +40,7 @@ export const updateArticleSchema = z.object({
 
   excerpt: z.string().optional(),
 
-  content: z.string().min(50).optional(),
+  content: z.string().min(10).optional(),
 
   featuredImage: z.string().optional(),
 

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 
 import { ZodSchema } from 'zod'
+import { apiResponse } from '@/utils/apiResponse'
 
 export const validate = (
   schema: ZodSchema
@@ -15,9 +16,12 @@ export const validate = (
 
       next()
     } catch (error: any) {
-      return res.status(400).json({
-        errors: error.errors
-      })
+      return apiResponse.error(
+        res,
+        'Validation failed',
+        400,
+        error.errors
+      )
     }
   }
 }

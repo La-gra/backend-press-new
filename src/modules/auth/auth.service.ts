@@ -2,7 +2,10 @@ import prisma from '@/config/prisma'
 
 import { comparePassword } from '@/utils/password'
 
-import { generateAccessToken } from '@/utils/jwt'
+import {
+  generateAccessToken,
+  generateRefreshToken
+} from '@/utils/jwt'
 
 export const loginAdmin = async (
   email: string,
@@ -31,13 +34,23 @@ export const loginAdmin = async (
     throw new Error('Invalid credentials')
   }
 
-  const token = generateAccessToken({
+  if (!admin.isVerified && admin.role !== 'SUPER_ADMIN') {
+    throw new Error('Email not verified')
+  }
+
+  const accessToken = generateAccessToken({
+    adminId: admin.id,
+    role: admin.role
+  })
+
+  const refreshToken = generateRefreshToken({
     adminId: admin.id,
     role: admin.role
   })
 
   return {
-    token,
+    accessToken,
+    refreshToken,
     admin
   }
 }

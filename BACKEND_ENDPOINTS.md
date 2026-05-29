@@ -195,9 +195,48 @@ Note: all protected requests use HttpOnly cookie auth and do not require `Author
 - `id`, `url`, `type`, `articleId`, `createdAt`
 - MediaType values: `IMAGE`, `VIDEO`
 
-## Implementation caveats for the frontend IA
-1. The only available article admin actions are create, read, update, delete and publish; the backend now supports full article CRUD.
-2. Tag management is now exposed via protected API routes.
+## RSS/Feed and Sitemap endpoints
+All RSS, feed, and sitemap endpoints are **public** (no authentication required) and served at the root path:
+
+- `GET /rss.xml`
+  - Main RSS feed with latest 20 published articles
+  - Content-Type: `application/rss+xml; charset=utf-8`
+  - Cache-Control: `public, max-age=900` (15 minutes)
+  - Returns RSS 2.0 format
+
+- `GET /atom.xml`
+  - Atom format feed with latest 20 published articles (compatible with Google News)
+  - Content-Type: `application/atom+xml; charset=utf-8`
+  - Cache-Control: `public, max-age=900` (15 minutes)
+  - Returns Atom 1.0 format
+
+- `GET /feed.json`
+  - JSON Feed format with latest 20 published articles
+  - Content-Type: `application/json; charset=utf-8`
+  - Cache-Control: `public, max-age=900` (15 minutes)
+  - Returns JSON Feed format
+
+- `GET /rss/:categorySlug`
+  - Per-category RSS feed with latest 20 published articles from specified category
+  - Content-Type: `application/rss+xml; charset=utf-8`
+  - Cache-Control: `public, max-age=900` (15 minutes)
+  - Returns RSS 2.0 format
+  - Returns 404 if category not found
+
+- `GET /sitemap.xml`
+  - XML sitemap for search engines
+  - Content-Type: `application/xml; charset=utf-8`
+  - Cache-Control: `public, max-age=3600` (1 hour)
+  - Includes homepage, articles listing, all categories, and all published articles with last modification dates
+
+## Environment variables
+- `DATABASE_URL` - PostgreSQL connection string
+- `DIRECT_URL` - Direct PostgreSQL connection string (for Prisma migrations)
+- `PORT` - Server port (default: 5000)
+- `NODE_ENV` - Environment mode (development/production)
+- `FRONTEND_URL` - Frontend base URL (required for article links in feeds)
+- `BACKEND_URL` - Backend base URL (required for media absolute URLs)
+- `JWT_ACCESS_SECRET` - Secret key for JWT token signing
 3. There is no protected endpoint to list admins; only create admin and assign permissions.
 4. Media now supports read/list, upload, and delete.
 5. The upload URL is returned as `/uploads/articles/<filename>` and the backend now serves `/uploads` statically in `src/app.ts`.

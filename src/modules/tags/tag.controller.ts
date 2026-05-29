@@ -1,14 +1,18 @@
 import { Request, Response } from 'express'
 
 import * as tagService from './tag.service'
+import { apiResponse } from '@/utils/apiResponse'
 
 export const listTags = async (
   req: Request,
   res: Response
 ) => {
-  const tags = await tagService.listTags()
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 10
 
-  return res.json(tags)
+  const result = await tagService.listTags(page, limit)
+
+  return apiResponse.success(res, result)
 }
 
 export const createTag = async (
@@ -18,11 +22,9 @@ export const createTag = async (
   try {
     const tag = await tagService.createTag(req.body)
 
-    return res.status(201).json(tag)
+    return apiResponse.success(res, { tag }, 'Tag created', 201)
   } catch (error: any) {
-    return res.status(400).json({
-      message: error.message
-    })
+    return apiResponse.error(res, error.message, 400)
   }
 }
 
@@ -31,20 +33,15 @@ export const updateTag = async (
   res: Response
 ) => {
   try {
-    const tagId = Array.isArray(req.params.id)
-      ? req.params.id[0]
-      : req.params.id
+    const tagId = (
+      Array.isArray(req.params.id) ? req.params.id[0] : req.params.id
+    ) as string
 
-    const tag = await tagService.updateTag(
-      tagId,
-      req.body
-    )
+    const tag = await tagService.updateTag(tagId, req.body)
 
-    return res.json(tag)
+    return apiResponse.success(res, { tag })
   } catch (error: any) {
-    return res.status(400).json({
-      message: error.message
-    })
+    return apiResponse.error(res, error.message, 400)
   }
 }
 
@@ -53,18 +50,14 @@ export const deleteTag = async (
   res: Response
 ) => {
   try {
-    const tagId = Array.isArray(req.params.id)
-      ? req.params.id[0]
-      : req.params.id
+    const tagId = (
+      Array.isArray(req.params.id) ? req.params.id[0] : req.params.id
+    ) as string
 
     await tagService.deleteTag(tagId)
 
-    return res.json({
-      message: 'Tag deleted'
-    })
+    return apiResponse.success(res, null, 'Tag deleted')
   } catch (error: any) {
-    return res.status(400).json({
-      message: error.message
-    })
+    return apiResponse.error(res, error.message, 400)
   }
 }

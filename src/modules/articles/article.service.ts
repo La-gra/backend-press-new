@@ -5,7 +5,13 @@ import slugify from 'slugify'
 export const listArticles = async (
   page: number,
   limit: number,
-  status?: string
+  status?: string,
+  filters?: {
+    categoryId?: string
+    authorId?: string
+    dateFrom?: string
+    dateTo?: string
+  }
 ) => {
   const skip = (page - 1) * limit
 
@@ -13,6 +19,38 @@ export const listArticles = async (
 
   if (status) {
     where.status = status
+  }
+
+  if (filters?.categoryId) {
+    where.categoryId = filters.categoryId
+  }
+
+  if (filters?.authorId) {
+    where.authorId = filters.authorId
+  }
+
+  if (filters?.dateFrom || filters?.dateTo) {
+    where.publishedAt = {}
+
+    if (filters.dateFrom) {
+      const from = new Date(filters.dateFrom)
+      if (!Number.isNaN(from.getTime())) {
+        where.publishedAt.gte = from
+      }
+    }
+
+    if (filters.dateTo) {
+      const to = new Date(filters.dateTo)
+      if (!Number.isNaN(to.getTime())) {
+        where.publishedAt.lte = to
+      }
+    }
+
+    if (
+      Object.keys(where.publishedAt).length === 0
+    ) {
+      delete where.publishedAt
+    }
   }
 
   const [articles, total] =

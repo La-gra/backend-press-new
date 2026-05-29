@@ -8,7 +8,7 @@ import { requirePermission } from '@/middlewares/permission.middleware'
 
 import { validate } from '@/middlewares/validate.middleware'
 
-import { createCategorySchema } from './category.validation'
+import { createCategorySchema, updateCategorySchema } from './category.validation'
 
 import { PERMISSIONS } from '@/constants/permissions'
 
@@ -44,6 +44,8 @@ router.patch(
   requirePermission(
     PERMISSIONS.CATEGORY_UPDATE
   ),
+
+  validate(updateCategorySchema),
 
   categoryController.updateCategory
 )

@@ -32,33 +32,58 @@ export const createCategory = async (
   })
 }
 
-export const getCategories = async () => {
-  return prisma.category.findMany({
-    orderBy: {
-      createdAt: 'desc'
+export const getCategories = async (
+  page: number,
+  limit: number
+) => {
+  const skip = (page - 1) * limit
+
+  const [categories, total] = await Promise.all([
+    prisma.category.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      },
+      skip,
+      take: limit
+    }),
+    prisma.category.count()
+  ])
+
+  return {
+    data: categories,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
     }
-  })
+  }
 }
 
 export const updateCategory = async (
   id: string,
   data: any
 ) => {
-  const slug = slugify(data.name, {
-    lower: true,
-    strict: true
-  })
+  const updates: any = {}
+
+  if (data.name) {
+    updates.name = data.name
+    updates.slug = slugify(data.name, {
+      lower: true,
+      strict: true
+    })
+  }
+
+  if (typeof data.description !== 'undefined') {
+    updates.description = data.description
+  }
 
   return prisma.category.update({
     where: {
       id
     },
 
-    data: {
-      name: data.name,
-      slug,
-      description: data.description
-    }
+    data: updates
   })
 }
 

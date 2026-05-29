@@ -4,6 +4,8 @@ import {
   NextFunction
 } from 'express'
 
+import { apiResponse } from '@/utils/apiResponse'
+
 export const errorHandler = (
   error: any,
   req: Request,
@@ -12,10 +14,11 @@ export const errorHandler = (
 ) => {
   console.error(error)
 
-  return res.status(500).json({
-    message:
-      process.env.NODE_ENV === 'production'
-        ? 'Internal server error'
-        : error.message
-  })
+  return apiResponse.error(
+    res,
+    process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
+      : error.message,
+    500
+  )
 }
