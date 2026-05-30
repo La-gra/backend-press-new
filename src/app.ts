@@ -25,17 +25,10 @@ app.use(express.static(path.join(__dirname, '../public')))
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 
 
+// Temporary: Allow all origins for debugging (TODO: revert to strict allowedOrigins after testing)
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true)
-      } else {
-        // Log blocked origin for easier debugging in production
-        console.warn('CORS blocked origin:', origin)
-        callback(new Error('CORS blocked'))
-      }
-    },
+    origin: true,
     credentials: true,
   })
 )
