@@ -2,6 +2,16 @@ import prisma from '@/config/prisma'
 
 import slugify from 'slugify'
 
+const toEmbedUrl = (url: string): string => {
+  const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]+)/)
+  if (watchMatch) return `https://www.youtube.com/embed/${watchMatch[1]}`
+
+  const fbMatch = url.match(/facebook\.com\/(?:watch\/\?v=|video\.php\?v=)(\d+)/)
+  if (fbMatch) return `https://www.facebook.com/plugins/video.php?href=https://facebook.com/watch/?v=${fbMatch[1]}`
+
+  return url
+}
+
 export const listArticles = async (
   page: number,
   limit: number,
@@ -175,7 +185,7 @@ export const createArticle = async (
 
       seoDescription: data.seoDescription,
 
-      videoUrl: data.videoUrl,
+      videoUrl: data.videoUrl ? toEmbedUrl(data.videoUrl) : undefined,
 
       status: 'DRAFT',
 
@@ -248,7 +258,7 @@ export const updateArticle = async (
     featuredImage: data.featuredImage,
     seoTitle: data.seoTitle,
     seoDescription: data.seoDescription,
-    videoUrl: data.videoUrl,
+    videoUrl: data.videoUrl ? toEmbedUrl(data.videoUrl) : undefined,
     categoryId: data.categoryId
   }
 

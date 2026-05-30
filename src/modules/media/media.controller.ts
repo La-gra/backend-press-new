@@ -55,18 +55,24 @@ export const uploadImage = async (
   req: Request,
   res: Response
 ) => {
-  const { url } = req.body
+  try {
+    if (!req.file) {
+      return apiResponse.error(res, 'Aucun fichier fourni', 400)
+    }
 
-  if (!url) {
-    return apiResponse.error(res, 'URL manquante', 400)
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'press-new',
+    })
+
+    const media = await mediaService.createMedia({
+      url: result.secure_url,
+      type: 'IMAGE',
+    })
+
+    return apiResponse.success(res, { media })
+  } catch (error: any) {
+    return apiResponse.error(res, error.message, 400)
   }
-
-  const media = await mediaService.createMedia({
-    url,
-    type: 'IMAGE',
-  })
-
-  return apiResponse.success(res, { media })
 }
 
 export const deleteMedia = async (

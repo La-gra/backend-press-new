@@ -14,6 +14,8 @@ import { requirePermission } from '@/middlewares/permission.middleware'
 
 import { PERMISSIONS } from '@/constants/permissions'
 
+import upload from '@/config/multer'
+
 const router = Router()
 
 router.get(
@@ -60,6 +62,8 @@ router.post(
   requirePermission(
     PERMISSIONS.MEDIA_UPLOAD
   ),
+
+  upload.single('file'),
 
   uploadImage
 )

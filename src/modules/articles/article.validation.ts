@@ -5,11 +5,10 @@ const videoUrlSchema = z
   .url()
   .refine(
     value =>
-      /^(https:\/\/)?(www\.)?youtube\.com\/embed\/.+/.test(value) ||
-      /^(https:\/\/)?(www\.)?facebook\.com\/plugins\/video\.php\?.+/.test(value),
+      /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|shorts\/)|youtu\.be\/|facebook\.com\/(watch\/\?v=|plugins\/video\.php\?|video\.php\?v=))/.test(value),
     {
       message:
-        'Video URL must be a YouTube or Facebook embed URL'
+        'Video URL must be a YouTube or Facebook video URL'
     }
   )
 
