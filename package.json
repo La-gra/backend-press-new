@@ -9,7 +9,7 @@
     "build": "tsc",
     "generate": "prisma generate --schema=prisma/schema.prisma",
     "postinstall": "pnpm run generate",
-    "start": "node dist/server.js"
+    "start": "node -r tsconfig-paths/register dist/server.js"
   },
   "keywords": [],
   "author": "",
