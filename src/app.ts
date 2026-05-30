@@ -8,14 +8,16 @@ import routes from './routes'
 import rssRoutes from './routes/rss.routes'
 
 
+const envFrontends = (process.env.FRONTEND_URL || '').split(',').map(s => s.trim()).filter(Boolean)
+
 const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:3001",
-  "http://127.0.0.1:3000",
-  "http://localhost:3002",
-  "http://localhost:3003",
-  "http://localhost:3004",
-  process.env.FRONTEND_URL,
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://127.0.0.1:3000',
+  'http://localhost:3002',
+  'http://localhost:3003',
+  'http://localhost:3004',
+  ...envFrontends,
 ]
 
 const app = express()
@@ -29,7 +31,9 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true)
       } else {
-        callback(new Error("CORS blocked"))
+        // Log blocked origin for easier debugging in production
+        console.warn('CORS blocked origin:', origin)
+        callback(new Error('CORS blocked'))
       }
     },
     credentials: true,
