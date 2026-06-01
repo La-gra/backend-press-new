@@ -2,6 +2,8 @@ import { Router } from 'express'
 
 import prisma from '@/config/prisma'
 import { apiResponse } from '@/utils/apiResponse'
+import Parser from 'rss-parser'
+import { RSS_SOURCES } from '@/config/rss-sources'
 
 const router = Router()
 
@@ -249,6 +251,70 @@ router.get('/related/:slug', async (req, res) => {
     })
 
   return apiResponse.success(res, { related })
+})
+
+const rssParser = new Parser({
+  timeout: 10000,
+  headers: {
+    'User-Agent': 'PresseRepblicaineNews/1.0',
+    'Accept': 'application/rss+xml, application/xml, text/xml',
+  },
+})
+
+let rssFeedCache: { data: any; expiry: number } | null = null
+const CACHE_TTL = 15 * 60 * 1000 // 15 minutes
+
+router.get('/rss-feeds', async (_req, res) => {
+  try {
+    if (rssFeedCache && Date.now() < rssFeedCache.expiry) {
+      return apiResponse.success(res, rssFeedCache.data)
+    }
+
+    const results = await Promise.allSettled(
+      RSS_SOURCES.map(source =>
+        rssParser.parseURL(source.url).then(feed => ({
+          source: source.name,
+          sourceSlug: source.slug,
+          items: (feed.items || []).slice(0, 10).map(item => ({
+            title: item.title || '',
+            link: item.link || '',
+            pubDate: item.pubDate || item.isoDate || '',
+            contentSnippet: (item.contentSnippet || item.content || '').substring(0, 300),
+            source: source.name,
+            sourceSlug: source.slug,
+            image: item.enclosure?.url
+              || (item as any)['media:content']?.$?.url
+              || (item as any)['media:thumbnail']?.$?.url
+              || null,
+          })),
+        }))
+      )
+    )
+
+    const allItems: any[] = []
+    const sources: { name: string; slug: string }[] = []
+
+    results.forEach((result) => {
+      if (result.status === 'fulfilled') {
+        allItems.push(...result.value.items)
+        sources.push({ name: result.value.source, slug: result.value.sourceSlug })
+      }
+    })
+
+    allItems.sort((a, b) => {
+      const dateA = a.pubDate ? new Date(a.pubDate).getTime() : 0
+      const dateB = b.pubDate ? new Date(b.pubDate).getTime() : 0
+      return dateB - dateA
+    })
+
+    const data = { items: allItems.slice(0, 10), sources }
+    rssFeedCache = { data, expiry: Date.now() + CACHE_TTL }
+
+    return apiResponse.success(res, data)
+  } catch (error: any) {
+    console.error('Error fetching RSS feeds:', error)
+    return apiResponse.error(res, 'Erreur lors de la récupération des flux RSS', 500)
+  }
 })
 
 export default router
